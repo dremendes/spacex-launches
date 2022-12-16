@@ -8,13 +8,17 @@ export interface rocket {
   rocket_type: string;
 };
 
-export interface launch {
+export interface links {
+  flickr_images: string[]
+}
+
+export default interface launch {
   id: number,
   mission_name: string,
   launch_site: launch_site,
   rocket: rocket,
+  links: links,
+  launch_year: string,
+  launch_success: string,
 };
 
-export interface launches {
-  launches: launch[];
-}
