@@ -48,11 +48,16 @@ export default function Launches() {
         placeholder="Search by mission name"
         value={search}
         onChange={(event) => setSearch(event.target.value)}
+        flexWrap="wrap"
+        width='550px'
+        alignSelf='center'
+        display='block'
+        margin='20px auto'
       />
       <Flex  align="center" justify="center" flexWrap="wrap">
-      {uniqueLaunches?.filter((launch: launch) =>
-        launch.mission_name.toLowerCase().includes(search.toLowerCase())
-      ).map((launch: launch) => (
+        {uniqueLaunches?.filter((launch: launch) =>
+          launch.mission_name.toLowerCase().includes(search.toLowerCase())
+        ).map((launch: launch) => (
           <Card key={launch.id}>
             <CardHeader>
               <Heading size='md'>Mission: {launch.mission_name.length >= 15 ? (launch.mission_name.slice(0,13) + '...') : launch.mission_name }</Heading>
