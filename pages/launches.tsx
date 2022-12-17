@@ -1,6 +1,8 @@
 import { gql, useQuery } from '@apollo/client';
 import { Flex, Heading, Text } from '@chakra-ui/core';
+import { Input } from "@chakra-ui/react";
 import { Card, CardHeader, CardBody, ChakraProvider, Image } from '@chakra-ui/react'
+import { useState } from 'react';
 import launch from '../types/launch';
 
 export const query = gql`
@@ -26,6 +28,9 @@ export const query = gql`
   `;
 export default function Launches() {
   const { data, loading, error } = useQuery(query);
+  const allIds:number[] = [];
+  const uniqueLaunches = data?.launches?.filter((launch: launch) => { if( allIds.includes(launch.id) ) { return false; } allIds.push(launch.id); return true; })
+  const [search, setSearch] = useState("");
 
   if (loading) {
     return <h2>Loading...</h2>;
@@ -39,8 +44,15 @@ export default function Launches() {
   return (
     <ChakraProvider>
       <Heading as='h1' size='md' fontSize={ '30px' } textAlign={ 'center' }>SpaceX Launches</Heading>
+      <Input
+        placeholder="Search by mission name"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+      />
       <Flex  align="center" justify="center" flexWrap="wrap">
-        {data?.launches?.map((launch: launch) => (
+      {uniqueLaunches?.filter((launch: launch) =>
+        launch.mission_name.toLowerCase().includes(search.toLowerCase())
+      ).map((launch: launch) => (
           <Card key={launch.id}>
             <CardHeader>
               <Heading size='md'>Mission: {launch.mission_name.length >= 15 ? (launch.mission_name.slice(0,13) + '...') : launch.mission_name }</Heading>
