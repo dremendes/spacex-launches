@@ -9,20 +9,16 @@ export const query = gql`
 {
   launches {
     id
-    launch_site {
-      site_id
-      site_name
+    details
+    mission_name
+    launch_date_local
+    links {
+      flickr_images
     }
     rocket {
       rocket_name
       rocket_type
     }
-    mission_name
-    links {
-      flickr_images
-    }
-    launch_year
-    launch_success
   }
 }  
   `;
@@ -55,7 +51,7 @@ export default function Launches() {
         margin='20px auto'
       />
       <Flex  align="center" justify="center" flexWrap="wrap">
-        {uniqueLaunches?.filter((launch: launch) =>
+        {uniqueLaunches?.sort((a: launch, b: launch) => { return a.links.flickr_images.length > 0 ? -1 : 1; }).filter((launch: launch) =>
           launch.mission_name.toLowerCase().includes(search.toLowerCase())
         ).map((launch: launch) => (
           <Card key={launch.id}>
@@ -64,10 +60,8 @@ export default function Launches() {
             </CardHeader>
             <CardBody>
               <Image src={launch.links.flickr_images[0] ?? 'https://dummyimage.com/250x250/000/fff&text=no+image+provided'} borderRadius='lg' width={ '250px'} height={ '250px' } />
-              <Text>Launch site: <strong>{launch.launch_site.site_name}</strong></Text>
               <Text>Rocket type: <strong>{launch.rocket.rocket_type}</strong></Text>
-              <Text>Launch year: <strong>{launch.launch_year}</strong></Text>
-              <Text> Was mission successfull? <strong>{launch.launch_success ? 'Yes' : 'No'}</strong></Text>
+              <Text maxWidth={ '250px' }>{launch.details}</Text>
             </CardBody>
           </Card>
         ))}

@@ -1,7 +1,3 @@
-export interface launch_site {
-  site_id: string;
-  site_name: string;
-};
 
 export interface rocket {
   rocket_name: string;
@@ -15,10 +11,9 @@ export interface links {
 export default interface launch {
   id: number,
   mission_name: string,
-  launch_site: launch_site,
+  details: string,
+  launch_date_local: string,
   rocket: rocket,
   links: links,
-  launch_year: string,
-  launch_success: string,
 };
 
