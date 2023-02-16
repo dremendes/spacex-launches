@@ -25,7 +25,15 @@ export const query = gql`
 export default function Launches() {
   const { data, loading, error } = useQuery(query);
   const allIds:number[] = [];
-  const uniqueLaunches = data?.launches?.filter((launch: launch) => { if( allIds.includes(launch.id) ) { return false; } allIds.push(launch.id); return true; })
+  const uniqueLaunches = data?.launches
+                             ?.filter((launch: launch) => launch.links.flickr_images.length > 0)
+                             ?.filter((launch: launch) => { 
+                                if( allIds.includes(launch.id) )
+                                  return false;
+                                allIds.push(launch.id); 
+                                return true; 
+                              })
+                              .sort((a: launch, b: launch) => a.details?.length >= b.details?.length ? -1 : 1);
   const [search, setSearch] = useState("");
 
   if (loading) {
@@ -51,17 +59,16 @@ export default function Launches() {
         margin='20px auto'
       />
       <Flex  align="center" justify="center" flexWrap="wrap">
-        {uniqueLaunches?.sort((a: launch, b: launch) => { return a.links.flickr_images.length > 0 ? -1 : 1; }).filter((launch: launch) =>
-          launch.mission_name.toLowerCase().includes(search.toLowerCase())
-        ).map((launch: launch) => (
-          <Card key={launch.id}>
+        {uniqueLaunches?.filter((launch: launch) =>
+  launch.mission_name.toLowerCase().includes(search.toLowerCase())).map((launch: launch) => (
+          <Card key={launch.id}  alignSelf={'baseline'}>
             <CardHeader>
               <Heading size='md'>Mission: {launch.mission_name.length >= 15 ? (launch.mission_name.slice(0,13) + '...') : launch.mission_name }</Heading>
             </CardHeader>
             <CardBody>
               <Image src={launch.links.flickr_images[0] ?? 'https://dummyimage.com/250x250/000/fff&text=no+image+provided'} borderRadius='lg' width={ '250px'} height={ '250px' } />
-              <Text>Rocket type: <strong>{launch.rocket.rocket_type}</strong></Text>
-              <Text maxWidth={ '250px' }>{launch.details}</Text>
+              <Text marginTop={ '20px' } maxWidth={ '250px' } >{launch.details}</Text>
+              <Text marginTop={ '20px' }>{ new Date(launch.launch_date_local).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})  }</Text>
             </CardBody>
           </Card>
         ))}
