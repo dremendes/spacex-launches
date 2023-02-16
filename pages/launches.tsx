@@ -26,6 +26,7 @@ export default function Launches() {
   const { data, loading, error } = useQuery(query);
   const allIds:number[] = [];
   const uniqueLaunches = data?.launches
+                             ?.filter((launch: launch) => launch.links.flickr_images.length > 0)
                              ?.filter((launch: launch) => { 
                                 if( allIds.includes(launch.id) )
                                   return false;
@@ -66,8 +67,8 @@ export default function Launches() {
             </CardHeader>
             <CardBody>
               <Image src={launch.links.flickr_images[0] ?? 'https://dummyimage.com/250x250/000/fff&text=no+image+provided'} borderRadius='lg' width={ '250px'} height={ '250px' } />
-              <Text maxWidth={ '250px' } minHeight={ '250px' }>{launch.details}</Text>
-              <Text marginTop={ '50px' }>{ new Date(launch.launch_date_local).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})  }</Text>
+              <Text marginTop={ '20px' } maxWidth={ '250px' } >{launch.details}</Text>
+              <Text marginTop={ '20px' }>{ new Date(launch.launch_date_local).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})  }</Text>
             </CardBody>
           </Card>
         ))}
